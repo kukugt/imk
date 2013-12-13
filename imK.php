@@ -3,6 +3,7 @@
 ** imK - Image Creator
 ** Author: Jorge Chaclán - http://kukugt.com
 ** Twitter: @kukugt
+**
 */
 class imK {
 	var $r = array();
@@ -24,7 +25,7 @@ class imK {
 
 		$iSize = getimagesize( $image );
 
-		$this->r['mod'     ]	= $mod;
+		$this->r['mod'     ]	= explode (":",$mod);
 		$this->r['reWidth' ]	= abs($reWidth);
 		$this->r['reHeight']	= abs($reHeight);
 		$this->r['crX'     ]	= abs($crX);
@@ -61,7 +62,7 @@ class imK {
 
 	private function ResizeImage (&$r){
 		// Square
-		if ($r['mod']=='q') {
+		if (in_array("square",$r['mod']) || in_array("q",$r['mod'])) {
 			if ($r['width'] > $r['height']) {
 				$r['reWidth' ] = ($r['reWidth']>0)?$r['reWidth']:$r['reHeight'];
 				$r['reHeight'] = $r['height'] / ($r['width' ]/$r['reWidth']);
@@ -71,7 +72,7 @@ class imK {
 			}
 		}
 		// Symmetric
-		if ($r['mod'] == 's') {
+		if (in_array("symmetric",$r['mod']) || in_array("s",$r['mod'])) {
 			if ($r['reHeight'] > 0) {
 				// $r['reHeight'] is the same.
 				$r['reWidth' ]  = $r['width' ] / ($r['height']/$r['reHeight']);
@@ -81,18 +82,19 @@ class imK {
 			}
 		}
 		// Asymmetric
-		if ($r['mod'] == 'a') {
+		if (in_array("asymmetric",$r['mod']) || in_array("a",$r['mod'])) {
 			$r['reWidth' ] = ($r['reWidth' ]>0)?$r['reWidth' ]:$r['width' ];
 			$r['reHeight'] = ($r['reHeight']>0)?$r['reHeight']:$r['height'];
 		}
 		// Equal to the original 
-		if ( $r['mod'] == null ) {
+		if (in_array("equal",$r['mod']) || $r['mod']==null) {
 			$r['reWidth' ] = $r['width'];
 			$r['reHeight'] = $r['height'];
 		}
 
 		$this->thumb = imagecreatetruecolor($r['reWidth' ], $r['reHeight']);
 	}
+
 
 	private function ImgOut(&$thumb, $type=0){
 		switch($type){
